@@ -1,12 +1,282 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <title>Sign Up</title>
+    <style>
+        input {
+            display: absolute;
+            width: 30%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+        }
+
+        .container {
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
-    <h2>회원가입페이지</h2>
+    <div class="container">
+    <br>
+    <h2 style="text-align: center;">회원가입페이지</h2> <br>
+        <div>
+            <input type="text" id="userid" onblur="usernameCheck()" placeholder="아이디를 입력해주세요">
+        </div>
+        <p id="idResult"></p>
+        <br>
+        <div>
+            <input type="password" id="userpass" placeholder="비밀번호를 입력해주세요">
+        </div>
+        <br> <br>
+        <div>
+            <input type="password" id="userpasscheck" onblur="pwCheck()" placeholder="비밀번호 확인을 위해 한번 더 입력해주세요"> <i
+                id="lock" class="bi bi-file-lock2"></i>
+        </div>
+        <p id="passResult"></p>
+        <br>
+        <div>
+            <input type="text" id="userphone" onblur="phoneCheck()" placeholder="휴대폰번호를 입력해주세요">
+            <p id="phoneResult"></p>
+        </div>
+        <br><br>
+        <div>
+            <input type="text" id="emailid" onblur="emailCheck()" placeholder="이메일주소를 입력해주세요"> @ <input type="text"
+                id="useremail">
+            <select id="email" onchange="emailSelect()">
+                <option value="">직접입력</option>
+                <option value="gmail.com">gmail.com</option>
+                <option value="naver.com">naver.com</option>
+                <option value="hanmail.net">hanmail.net</option>
+                <option value="icloud.com">icloud.com</option>
+                <option value="nate.com">nate.com</option>
+            </select>
+            <p id="emailResult"></p>
+        </div>
+        <br> <br>
+        <div>
+            <span>
+                <input type="text" id="sample6_postcode" placeholder="우편번호">
+                <input type="button" style="color: white; background-color: #0d6efd"
+                    onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+
+                <input type="text" id="sample6_address" style="position:relative; right: 198px;" placeholder="주소"><br>
+
+                <input type="text" id="sample6_detailAddress" onblur="adrCheck()" placeholder="상세주소">
+                <input type="text" id="sample6_extraAddress" placeholder="참고항목">
+                <p id="adrResult"></p>
+            </span>
+        </div>
+        <br><br>
+        <div>
+            <button class="btn btn-primary" onclick="pushbtn()">회원가입</button>
+        </div>
+    </div>
 </body>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function pushbtn() {
+        const id = document.getElementById("userid");
+        const pass = document.getElementById("userpass");
+        const passcheck = document.getElementById("userpasscheck")
+        const phone = document.getElementById("userphone");
+        const email = document.getElementById("emailid");
+        const emailadd = document.getElementById("useremail");
+        const address = document.getElementById("sample6_detailAddress");
+        if (id.value == "") {
+            alert("아이디를 입력하세요.");
+            return false;
+        };
+
+        var idexp = /^(?=.*[a-z])(?=.*\d)[a-z \d]{5,15}$/;
+
+        if (!idexp.test(id.value)) {
+            alert("아이디는 영어소문자+숫자 조합으로 5~15자리를 입력해야 합니다.")
+            return false;
+        }
+
+        if (pass.value == "") {
+            alert("비밀번호를 입력하세요.");
+            return false;
+        };
+
+        var pwdexp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Z a-z \d]{5,18}$/;
+
+        if (!pwdexp.test(pass.value)) {
+            alert("비밀번호는 영어대문자+영어소문자+숫자 조합으로 5~18자리를 입력해야 합니다.");
+            return false;
+        };
+
+        if (passcheck.value !== pass.value) {
+            alert("비밀번호가 일치하지 않습니다..");
+            return false;
+        };
+
+        var phoneExp = /^\d{3}-\d{4}-\d{4}$/;
+
+        if (!phoneExp.test(phone.value)) {
+            alert("전화번호는 숫자만 입력할 수 있습니다.");
+            return false;
+        }
+
+        if (email.value == "") {
+            alert("이메일 주소를 입력하세요.");
+            return false;
+        }
+
+        if (emailadd.value == "") {
+            alert("이메일 주소를 입력하세요.");
+            return false;
+        }
+
+        if (address.value == "") {
+            alert("주소를 입력해주세요.")
+            return false;
+        }
+
+        alert("회원가입 성공!");
+
+    }
+
+
+    function usernameCheck() {
+        const username = document.getElementById("userid").value;
+        const result = document.getElementById("idResult");
+        const exp = /^(?=.*[a-z])(?=.*\d)[a-z \d]{5,15}$/;
+        if (username.length >= 5 && username.length <= 15 && username.match(exp)) {
+            result.innerHTML = "멋진 아이디네요!";
+            result.style.color = "green";
+        } else if (username.length == 0) {
+            result.innerHTML = "아이디를 입력하세요";
+            result.style.color = "red";
+        } else {
+            result.innerHTML = "영어소문자와 숫자를 조합해서 5~15자 이내로 작성해주세요";
+            result.style.color = "red";
+        }
+    }
+
+    function pwCheck() {
+        const pass1 = document.getElementById("userpass").value;
+        const pass2 = document.getElementById("userpasscheck").value;
+        const result = document.getElementById("passResult");
+        const lock = document.getElementById("lock");
+        const exp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Z a-z \d]{5,18}$/;
+        if (pass1 == pass2) {
+            result.innerHTML = "암호가 일치합니다.";
+            result.style.color = "green";
+            lock.style.color = "green";
+        } else {
+            result.innerHTML = "암호가 일치하지 않습니다.";
+            result.style.color = "red";
+            lock.style.color = "red";
+        }
+    }
+
+    function phoneCheck() {
+        const phone = document.getElementById("userphone").value;
+        const result = document.getElementById("phoneResult")
+        const exp = /^\d{3}-\d{4}-\d{4}$/;
+        if (phone.match(exp)) {
+            result.innerHTML = "정상적인 번호입니다."
+            result.style.color = "green";
+        } else {
+            result.innerHTML = "휴대전화 번호를 확인해주세요."
+            result.style.color = "red";
+        }
+    }
+
+    function emailCheck() {
+        const emailcheck = document.getElementById("emailid").value;
+        const emailadd = document.getElementById("useremail").value;
+        const result = document.getElementById("emailResult");
+        if (emailcheck !== "" && emailadd !== "") {
+            result.innerHTML = "정상적인 이메일주소 입니다"
+            result.style.color = "green";
+        } else {
+            result.innerHTML = "이메일주소를 입력해주세요"
+            result.style.color = "red";
+        }
+    }
+
+
+    function emailSelect() {
+        const email = document.getElementById("email").value;
+        const useremail = document.getElementById("useremail");
+        useremail.value = email;
+    }
+
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if (data.userSelectedType === 'R') {
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if (data.buildingName !== '' && data.apartment === 'Y') {
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if (extraAddr !== '') {
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
+
+                } else {
+                    document.getElementById("sample6_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample6_postcode').value = data.zonecode;
+                document.getElementById("sample6_address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("sample6_detailAddress").focus();
+            }
+        }).open();
+    }
+
+    function adrCheck() {
+        const adr = document.getElementById("sample6_detailAddress").value;
+        const adrResult = document.getElementById("adrResult");
+        if(adr !== "" ) {
+            adrResult.innerHTML = "정상적인 주소입니다.";
+            adrResult.style.color = "green";
+        } else {
+            adrResult.innerHTML = "주소를 입력해주세요.";
+            adrResult.style.color = "red";
+        }
+    }
+
+</script>
+
 </html>
