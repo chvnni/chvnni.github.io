@@ -56,7 +56,7 @@
                         <div class="mb-3">
                             <input type="password" class="form-control" id="password" placeholder="비밀번호">
                         </div>
-                        <div class="text-center"><button type="submit" onclick="loginbtn()"
+                        <div class="text-center"><button type="button" onclick="loginbtn()"
                                 class="btn btn-color px-5 mb-5 w-100">로그인</button></div>
                         <div id="emailHelp" class="form-text text-center mb-5 text-dark">계정이없으세요? <a href="signup.html"
                                 class="text-dark fw-bold"> 회원가입</a>
@@ -72,14 +72,16 @@
     function loginbtn() {
         const id = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        if (id !== "" && password !== "") {
-            alert("로그인 성공!");
-            document.location.href="index.html"; 
-        } else if (id == "") {
+        if (id == "") {
             alert("아이디를 입력해주세요.");
+            return false;
         } else if (password == "") {
             alert("비밀번호를 입력해주세요.");
-        }
+            return false;
+        } 
+        alert("로그인 성공!");
+        window.location.href="index.html";
+
     }
 </script>
 
